@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -7,6 +7,8 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(DungeonGenerator))]
 public class DungeonGeneratorEditor : Editor
 {
+    private const int MAX_DRUNKARDS = 5;
+
     private const string HEADING_TEXT_SIZE_KEY = "DG_HeadingTextSize";
     private int headingTextSize;
     private const string GRID_CELL_SIZE_KEY = "DG_GridCellSize";
@@ -15,9 +17,12 @@ public class DungeonGeneratorEditor : Editor
     private int gridCellMargin;
 
     private VisualElement gridContainer;
+    private VisualElement drunkardTargetsContainer;
 
     private SerializedProperty gridWidth;
     private SerializedProperty gridHeight;
+
+    private bool manuallyEditedGrid = true;
 
     private void OnEnable()
     {
@@ -52,9 +57,23 @@ public class DungeonGeneratorEditor : Editor
         root.Add(gridScrollView);
         CreateGrid(targetScript);
 
+        root.Add(CreateSeparator(0, 10));
 
-        root.TrackPropertyValue(gridWidth, _ => CreateGrid(targetScript));
-        root.TrackPropertyValue(gridHeight, _ => CreateGrid(targetScript));
+        Foldout drunkardsWalkFoldout = new Foldout();
+        drunkardsWalkFoldout.text = "Populate using Drunkard's Walk";
+        drunkardsWalkFoldout.Add(CreateDrunkardsWalkControls(targetScript));
+        root.Add(drunkardsWalkFoldout);
+
+        root.TrackPropertyValue(gridWidth, _ =>
+        {
+            DrunkardsWalkTargetControls(targetScript);
+            CreateGrid(targetScript);
+        });
+        root.TrackPropertyValue(gridHeight, _ => 
+        {
+            DrunkardsWalkTargetControls(targetScript);
+            CreateGrid(targetScript);
+        });
         root.Bind(serializedObject);
         return root;
     }
@@ -94,6 +113,8 @@ public class DungeonGeneratorEditor : Editor
 
                 gridCell.style.backgroundColor = targetScript.EnabledGrid[x,y] ? Color.white : Color.gray;
 
+                gridCell.tooltip = $"({x}, {y})";
+
                 int localX = x;
                 int localY = y;
 
@@ -102,6 +123,8 @@ public class DungeonGeneratorEditor : Editor
                     targetScript.EnabledGrid[localX, localY] = !targetScript.EnabledGrid[localX, localY];
                     gridCell.style.backgroundColor = targetScript.EnabledGrid[localX, localY] ? Color.white : Color.gray;
                     EditorUtility.SetDirty(targetScript);
+
+                    manuallyEditedGrid = true;
                 });
 
                 gridContainer.Add(gridCell);
@@ -141,9 +164,11 @@ public class DungeonGeneratorEditor : Editor
 
         SliderInt cellSizeSlider = new SliderInt("Grid Cell Size", 8, 30);
         cellSizeSlider.value = gridCellSize;
-        cellSizeSlider.RegisterValueChangedCallback(_ =>
+        cellSizeSlider.showInputField = true;
+        cellSizeSlider.AddToClassList(Slider.alignedFieldUssClassName);
+        cellSizeSlider.RegisterValueChangedCallback(value =>
         {
-            gridCellSize = _.newValue;
+            gridCellSize = value.newValue;
             EditorPrefs.SetInt(GRID_CELL_SIZE_KEY, gridCellSize);
 
             CreateGrid(targetScript);
@@ -151,5 +176,149 @@ public class DungeonGeneratorEditor : Editor
         controls.Add(cellSizeSlider);
 
         return controls;
+    }
+
+    private VisualElement CreateDrunkardsWalkControls(DungeonGenerator targetScript)
+    {
+        VisualElement controls = new VisualElement();
+        controls.style.flexDirection = FlexDirection.Column;
+
+        SliderInt stepSlider = new SliderInt("Drunkard's Walk Max Steps", 0, 10000);
+        stepSlider.value = targetScript.DrunkardsWalkParameters.StepCount;
+        stepSlider.showInputField = true;
+        stepSlider.AddToClassList(Slider.alignedFieldUssClassName);
+        stepSlider.RegisterValueChangedCallback(value =>
+        {
+            targetScript.DrunkardsWalkParameters.StepCount = value.newValue;
+            EditorUtility.SetDirty(targetScript);
+        });
+        controls.Add(stepSlider);
+
+        Slider maxGridFillSlider = new Slider("Max Grid Fill Percentage", 0, 1);
+        maxGridFillSlider.value = targetScript.DrunkardsWalkParameters.MaxGridFill;
+        maxGridFillSlider.showInputField = true;
+        maxGridFillSlider.AddToClassList(Slider.alignedFieldUssClassName);
+        maxGridFillSlider.RegisterValueChangedCallback(value =>
+        {
+            targetScript.DrunkardsWalkParameters.MaxGridFill = value.newValue;
+            EditorUtility.SetDirty(targetScript);
+            serializedObject.Update();
+        });
+        controls.Add(maxGridFillSlider);
+
+        SliderInt drunkardsSlider = new SliderInt("Drunkard Count", 1, MAX_DRUNKARDS);
+        drunkardsSlider.value = targetScript.DrunkardsWalkParameters.Targets.Count;
+        drunkardsSlider.showInputField = true;
+        drunkardsSlider.AddToClassList(Slider.alignedFieldUssClassName);
+        drunkardsSlider.RegisterValueChangedCallback(value =>
+        {
+            int diff = value.newValue - value.previousValue;
+
+            if (diff != 0)
+            {
+
+                if (diff > 0)
+                {
+                    for (int i = 0; i < diff; i++)
+                    {
+                        targetScript.DrunkardsWalkParameters.Targets.Add(new DGDrunkardsWalkTarget(new Vector2Int(-1, -1), 0.5f));
+                    }
+                }
+                else if (diff < 0)
+                {
+                    for (int i = 0; i > diff; i--)
+                    {
+                        targetScript.DrunkardsWalkParameters.Targets.RemoveAt(targetScript.DrunkardsWalkParameters.Targets.Count - 1);
+                    }
+                }
+
+                EditorUtility.SetDirty(targetScript);
+                serializedObject.Update();
+                DrunkardsWalkTargetControls(targetScript);
+            }
+        });
+        controls.Add(drunkardsSlider);
+
+        controls.Add(CreateSeparator(1, 10));
+
+        drunkardTargetsContainer = new VisualElement();
+        controls.Add(drunkardTargetsContainer);
+        DrunkardsWalkTargetControls(targetScript);
+
+        Button drunkardsWalkButton = new Button();
+        drunkardsWalkButton.text = "Perform Drunkards Walk";
+        drunkardsWalkButton.RegisterCallback<ClickEvent>(_ =>
+        {
+            if (manuallyEditedGrid)
+            {
+                manuallyEditedGrid = !EditorUtility.DisplayDialog(
+                    "Are you sure?",
+                    "This action will overwrite the current grid layout. Are you sure you want to continue?",
+                    "Continue",
+                    "Cancel"
+                );
+            }
+
+            if (!manuallyEditedGrid)
+            {
+                targetScript.PerformDrunkardsWalk();
+                EditorUtility.SetDirty(targetScript);
+                CreateGrid(targetScript);
+                manuallyEditedGrid = false;
+            }
+        });
+        controls.Add(drunkardsWalkButton);
+
+        return controls;
+    }
+
+    private void DrunkardsWalkTargetControls(DungeonGenerator targetScript)
+    {
+        drunkardTargetsContainer.Clear();
+
+        List<DGDrunkardsWalkTarget> targets = targetScript.DrunkardsWalkParameters.Targets;
+        int maxX = targetScript.EnabledGrid.GetLength(0);
+        int maxY = targetScript.EnabledGrid.GetLength(1);
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            int localI = i;
+
+            targets[i].Position = ClampVector2Int(targets[i].Position, maxX, maxY);
+
+            Vector2IntField targetField = new Vector2IntField($"Drunkard {i + 1}'s Target");
+            targetField.value = targets[i].Position;
+            targetField.AddToClassList(Vector2IntField.alignedFieldUssClassName);
+            targetField.RegisterValueChangedCallback(value =>
+            {
+                Vector2Int clampedValue = ClampVector2Int(value.newValue, maxX, maxY);
+                targetField.SetValueWithoutNotify(clampedValue);
+                targets[localI].Position = clampedValue;
+                EditorUtility.SetDirty(targetScript);
+                serializedObject.Update();
+            });
+            drunkardTargetsContainer.Add(targetField);
+
+            Slider biasField = new Slider($"Drunkard {i + 1}'s Bias", 0, 1);
+            biasField.value = targets[i].Bias;
+            biasField.showInputField = true;
+            biasField.AddToClassList(Slider.alignedFieldUssClassName);
+            biasField.RegisterValueChangedCallback(value =>
+            {
+                targets[localI].Bias = value.newValue;
+                EditorUtility.SetDirty(targetScript);
+                serializedObject.Update();
+            });
+            drunkardTargetsContainer.Add(biasField);
+
+        }
+    }
+
+    private Vector2Int ClampVector2Int(Vector2Int value, int maxX, int maxY)
+    {
+        return new Vector2Int(
+            Mathf.Clamp(value.x, -1, maxX - 1),
+            Mathf.Clamp(value.y, -1, maxY - 1)
+        );
     }
 }

@@ -478,6 +478,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonGenerator
   GridWidth: 10
   GridHeight: 10
+  serialisedEnabledGrid: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  serialisedEnabledGridWidth: 10
+  serialisedEnabledGridHeight: 10
+  DrunkardsWalkParameters:
+    StepCount: 2021
+    MaxGridFill: 0
+    Targets:
+    - Position: {x: 0, y: 0}
+      Bias: 0.25836942
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

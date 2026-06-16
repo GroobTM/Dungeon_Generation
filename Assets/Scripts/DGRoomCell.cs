@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DungeonGeneratorRoomCell : MonoBehaviour
+public class DGRoomCell : MonoBehaviour
 {
     [SerializeField]
     private GameObject northWall;
@@ -49,12 +48,12 @@ public class DungeonGeneratorRoomCell : MonoBehaviour
         northWestDetails.ForEach(obj => obj.SetActive(false));
     }
 
-    public void Configure(CellOptions cellOptions)
+    public void Configure(DGCardinalDirection cellOptions)
     {
-        bool north = (cellOptions & CellOptions.NORTH) != 0;
-        bool east = (cellOptions & CellOptions.EAST) != 0;
-        bool south = (cellOptions & CellOptions.SOUTH) != 0;
-        bool west = (cellOptions & CellOptions.WEST) != 0;
+        bool north = (cellOptions & DGCardinalDirection.NORTH) != 0;
+        bool east = (cellOptions & DGCardinalDirection.EAST) != 0;
+        bool south = (cellOptions & DGCardinalDirection.SOUTH) != 0;
+        bool west = (cellOptions & DGCardinalDirection.WEST) != 0;
 
 
         if (north)
@@ -100,15 +99,5 @@ public class DungeonGeneratorRoomCell : MonoBehaviour
         {
             northWestDetails.ForEach(obj => obj.SetActive(true));
         }
-    }
-
-    [Flags]
-    public enum CellOptions
-    {
-        NONE    = 0,
-        NORTH   = 1 << 0,
-        EAST    = 1 << 1,
-        SOUTH   = 1 << 2,
-        WEST    = 1 << 3,
     }
 }
