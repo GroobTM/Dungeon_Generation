@@ -15,6 +15,7 @@ public class DungeonGeneratorEditor : Editor
     private int gridCellSize;
     private const string GRID_CELL_MARGIN_KEY = "DG_GridCellMargin";
     private int gridCellMargin;
+    private const string DRUNKARDS_WALK_FOLDOUT_STATE_KEY = "DG_DrunkardsWalkFoldoutState";
 
     private VisualElement gridContainer;
     private VisualElement drunkardTargetsContainer;
@@ -61,6 +62,11 @@ public class DungeonGeneratorEditor : Editor
 
         Foldout drunkardsWalkFoldout = new Foldout();
         drunkardsWalkFoldout.text = "Populate using Drunkard's Walk";
+        drunkardsWalkFoldout.value = SessionState.GetBool(DRUNKARDS_WALK_FOLDOUT_STATE_KEY, false);
+        drunkardsWalkFoldout.RegisterValueChangedCallback(value =>
+        {
+            SessionState.SetBool(DRUNKARDS_WALK_FOLDOUT_STATE_KEY, value.newValue);
+        });
         drunkardsWalkFoldout.Add(CreateDrunkardsWalkControls(targetScript));
         root.Add(drunkardsWalkFoldout);
 

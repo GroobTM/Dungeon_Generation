@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed13f2d406020be438b589373a0d1a2d, type: 3}
+  m_Name: DGTileSet-Extended
+  m_EditorClassIdentifier: Assembly-CSharp::DGTileSet
+  Tiles:
+  - serialisedTile: 000100000100000000
+  - serialisedTile: 000100000101000000
+  - serialisedTile: 000100000100000100
+  - serialisedTile: 000100000101000100
+  - serialisedTile: 000100010101000100
+  - serialisedTile: 000101000101000000
+  - serialisedTile: 000000010101000101
+  - serialisedTile: 000100000101000101
+  - serialisedTile: 000100010101000101
+  - serialisedTile: 000101000101000101
+  - serialisedTile: 000101010101000101
+  - serialisedTile: 010101010101010101

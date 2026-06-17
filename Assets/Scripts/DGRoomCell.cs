@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class DGRoomCell : MonoBehaviour
 {
+    [field: SerializeField, Min(0)]
+    public float CellWidth { get; private set; } = 1;
+
     [SerializeField]
     private GameObject northWall;
     [SerializeField]
@@ -99,5 +102,11 @@ public class DGRoomCell : MonoBehaviour
         {
             northWestDetails.ForEach(obj => obj.SetActive(true));
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(new Vector3(CellWidth / 2, 0f, CellWidth / 2), new Vector3(CellWidth, 0f, CellWidth));
     }
 }
