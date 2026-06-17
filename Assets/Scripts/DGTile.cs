@@ -8,12 +8,56 @@ public class DGTile : ISerializationCallbackReceiver
 
     public bool[,] Values = new bool[TILE_SIZE, TILE_SIZE];
 
+    public bool[,] IsContraint = new bool[TILE_SIZE, TILE_SIZE];
+
     [SerializeField, HideInInspector]
     private bool[] serialisedTile = new bool[TILE_SIZE * TILE_SIZE];
 
     public DGTile()
     {
         Values[1,1] = true;
+        IsContraint[1, 1] = true;
+    }
+
+    public bool MatchesConstraints(DGTile constraints)
+    {
+        for (int x = 0; x < TILE_SIZE; x++)
+        {
+            for (int y = 0; y < TILE_SIZE; y++)
+            {
+                if (constraints.IsContraint[x, y])
+                {
+                    if (Values[x, y] != constraints.Values[x, y])
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public DGTile RotateTile(int noRotations = 1)
+    {
+        noRotations %= 4;
+
+        DGTile currentRotation = this;
+
+        for (int i = 0; i < noRotations; i++)
+        {
+            DGTile nextRotation = new DGTile();
+
+            for (int x = 0; x < TILE_SIZE; x++)
+            {
+                for (int y = 0; y < TILE_SIZE; y++)
+                {
+                    nextRotation.Values[y, TILE_SIZE - 1 - x] = currentRotation.Values[x, y];
+                }
+            }
+        }
+
+        return currentRotation;
     }
 
     public void OnBeforeSerialize()
