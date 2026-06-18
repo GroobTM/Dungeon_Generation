@@ -108,6 +108,19 @@ public class DGTileSetEditor : Editor
             }
             tileSettingsFoldout.Add(tileSettings);
             
+            Slider tileWeightSlider = new Slider("Tile Weight", 0f, 1f);
+            tileWeightSlider.value = targetScript.Tiles[i].Weight;
+            tileWeightSlider.showInputField = true;
+            tileWeightSlider.AddToClassList(Slider.alignedFieldUssClassName);
+            tileWeightSlider.RegisterValueChangedCallback(value =>
+            {
+                targetScript.Tiles[localI].Weight = value.newValue;
+                EditorUtility.SetDirty(targetScript);
+                serializedObject.Update();
+            });
+            tileSettingsFoldout.Add(tileWeightSlider);
+
+
             Button removeTileButton = new Button();
             removeTileButton.text = "Remove Tile";
             removeTileButton.RegisterCallback<ClickEvent>(_ =>

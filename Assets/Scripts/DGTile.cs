@@ -10,6 +10,8 @@ public class DGTile : ISerializationCallbackReceiver
 
     public bool[,] IsContraint = new bool[TILE_SIZE, TILE_SIZE];
 
+    public float Weight = 1.0f;
+
     [SerializeField, HideInInspector]
     private bool[] serialisedTile = new bool[TILE_SIZE * TILE_SIZE];
 
@@ -55,9 +57,28 @@ public class DGTile : ISerializationCallbackReceiver
                     nextRotation.Values[y, TILE_SIZE - 1 - x] = currentRotation.Values[x, y];
                 }
             }
+
+            currentRotation = nextRotation;
         }
 
         return currentRotation;
+    }
+
+    public void DrawGizmo(float size, float startX, float startY)
+    {
+        float subTileSize = size / TILE_SIZE;
+        for (int x = 0; x < TILE_SIZE; x++)
+        {
+            for (int y = 0; y < TILE_SIZE; y++)
+            {
+                Gizmos.color = Values[x, y] ? Color.white : Color.gray;
+
+                float xPosition = startX + (x * subTileSize) + (subTileSize / 2f);
+                float yPosition = startY + (y * subTileSize) + (subTileSize / 2f);
+
+                Gizmos.DrawCube(new Vector3(xPosition, 0f, yPosition), new Vector3(subTileSize, 0, subTileSize));
+            }
+        }
     }
 
     public void OnBeforeSerialize()

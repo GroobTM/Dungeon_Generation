@@ -20,8 +20,11 @@ public class DungeonGeneratorEditor : Editor
     private VisualElement gridContainer;
     private VisualElement drunkardTargetsContainer;
 
+    private Button wfcButton;
+
     private SerializedProperty gridWidth;
     private SerializedProperty gridHeight;
+    private SerializedProperty tileSet;
 
     private bool manuallyEditedGrid = true;
 
@@ -40,6 +43,9 @@ public class DungeonGeneratorEditor : Editor
 
         gridWidth = serializedObject.FindProperty("GridWidth");
         gridHeight = serializedObject.FindProperty("GridHeight");
+        tileSet = serializedObject.FindProperty("TileSet");
+
+        root.Add(CreateSeparator(0, 10));
 
         Label title = new Label("Dungeon Generator");
         title.style.fontSize = headingTextSize;
@@ -70,6 +76,10 @@ public class DungeonGeneratorEditor : Editor
         drunkardsWalkFoldout.Add(CreateDrunkardsWalkControls(targetScript));
         root.Add(drunkardsWalkFoldout);
 
+        root.Add(CreateSeparator(2, 10));
+
+        root.Add(CreateWFCControls(targetScript));
+
         root.TrackPropertyValue(gridWidth, _ =>
         {
             DrunkardsWalkTargetControls(targetScript);
@@ -79,6 +89,10 @@ public class DungeonGeneratorEditor : Editor
         {
             DrunkardsWalkTargetControls(targetScript);
             CreateGrid(targetScript);
+        });
+        root.TrackPropertyValue(tileSet, value =>
+        {
+            wfcButton.SetEnabled(value.objectReferenceValue != null);
         });
         root.Bind(serializedObject);
         return root;
@@ -318,6 +332,42 @@ public class DungeonGeneratorEditor : Editor
             drunkardTargetsContainer.Add(biasField);
 
         }
+    }
+
+    private VisualElement CreateWFCControls(DungeonGenerator targetScript)
+    {
+        VisualElement controls = new VisualElement();
+        controls.style.flexDirection = FlexDirection.Column;
+
+        Label heading = new Label("Wave Function Collapse");
+        heading.style.fontSize = headingTextSize * 0.9f;
+        controls.Add(heading);
+
+        controls.Add(CreateSeparator(0, 10));
+
+        PropertyField tileSetField = new PropertyField(tileSet, "Tile Set");
+        controls.Add(tileSetField);
+
+        wfcButton = new Button();
+        wfcButton.text = "Perform Wave Function Collapse";
+        wfcButton.SetEnabled(tileSet.objectReferenceValue != null);
+        wfcButton.RegisterCallback<ClickEvent>(_ =>
+        {
+            bool confirmed = EditorUtility.DisplayDialog(
+                "Are you sure?",
+                "This action will overwrite the current layout. Are you sure you want to continue?",
+                "Continue",
+                "Cancel"
+            );
+
+            if (confirmed)
+            {
+                targetScript.PerformWaveFunctionCollapse();
+            }
+        });
+        controls.Add(wfcButton);
+
+        return controls;
     }
 
     private Vector2Int ClampVector2Int(Vector2Int value, int maxX, int maxY)

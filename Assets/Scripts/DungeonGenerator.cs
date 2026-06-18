@@ -1,6 +1,4 @@
-using NUnit.Framework.Constraints;
 using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
@@ -20,10 +18,21 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
     public DGDrunkardsWalkParameters DrunkardsWalkParameters = new DGDrunkardsWalkParameters();
 
-    [field: SerializeField]
-    public DGTileSet TileSet { get; private set; }
-    [field: SerializeField]
-    public DGRoomCell RoomCell { get; private set; }
+    public DGTileSet TileSet = null;
+
+    private DGTile[,] tileGrid = null;
+
+    [SerializeReference, HideInInspector]
+    private DGTile[] serialisedTileGrid;
+    [SerializeField, HideInInspector]
+    private int serialisedTileGridWidth;
+    [SerializeField, HideInInspector]
+    private int serialisedTileGridHeight;
+
+    [SerializeField, Min(-1)]
+    private int dunkardsWalkSeed = -1;
+
+    public DGRoomCell RoomCell = null;
 
 
     public void OnValidate()
@@ -45,6 +54,22 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         }
 
         EnabledGrid = newEnabledGrid;
+    }
+
+    public void OnDrawGizmos()
+    {
+        if (tileGrid != null)
+        {
+            float visualiseSize = RoomCell != null ? RoomCell.CellWidth : 1f;
+
+            for (int x = 0; x < tileGrid.GetLength(0); x++)
+            {
+                for (int y = 0; y < tileGrid.GetLength(1); y++)
+                {
+                    tileGrid[x, y]?.DrawGizmo(visualiseSize, x * visualiseSize, y * visualiseSize);
+                }
+            }
+        }
     }
 
     public void ResetGrid(bool enabled = false)
@@ -98,22 +123,32 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
     public void PerformWaveFunctionCollapse()
     {
-        List<DGTile>[,] entropyGrid = CreateEmptyEntropyGrid();
-        if (entropyGrid.GetLength(0) == 0)
+        if (TileSet == null)
         {
             return;
         }
 
-        DGTile[,] tileGrid = new DGTile[entropyGrid.GetLength(0), entropyGrid.GetLength(1)];
+        List<DGTile>[,] entropyGrid = CreateEmptyEntropyGrid();
+        if (entropyGrid.GetLength(0) == 0 || entropyGrid.GetLength(1) == 0)
+        {
+            return;
+        }
+
+        tileGrid = new DGTile[entropyGrid.GetLength(0), entropyGrid.GetLength(1)];
         
-        entropyGrid = PopulateEntropyGrid(entropyGrid, tileGrid);
+        entropyGrid = PopulateEntropyGrid(entropyGrid);
         (int lowestEntropyCell, Vector2Int lowestEntropyCellPosition) = FindLowestEntropyCell(entropyGrid);
 
         while (lowestEntropyCell >= 0)
         {
+            if (lowestEntropyCell == 0)
+            {
+                LogMissingCell(lowestEntropyCellPosition.x, lowestEntropyCellPosition.y);
+                break;
+            }
             tileGrid[lowestEntropyCellPosition.x, lowestEntropyCellPosition.y] = SelectRandomTile(entropyGrid[lowestEntropyCellPosition.x, lowestEntropyCellPosition.y]);
 
-            entropyGrid = PopulateEntropyGrid(entropyGrid, tileGrid);
+            entropyGrid = PopulateEntropyGrid(entropyGrid);
             (lowestEntropyCell, lowestEntropyCellPosition) = FindLowestEntropyCell(entropyGrid);
         }
     }
@@ -151,7 +186,7 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         }
     }
 
-    private List<DGTile>[,] PopulateEntropyGrid(List<DGTile>[,] entropyGrid, DGTile[,] currentTiles)
+    private List<DGTile>[,] PopulateEntropyGrid(List<DGTile>[,] entropyGrid)
     {
         for (int x = 0; x < entropyGrid.GetLength(0); x++)
         {
@@ -159,13 +194,13 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
             {
                 if (EnabledGrid[x, y])
                 {
-                    if (currentTiles[x, y] != null)
+                    if (tileGrid[x, y] != null)
                     {
                         entropyGrid[x, y] = null;
                     }
                     else
                     {
-                        entropyGrid[x, y] = GetTileEntropy(currentTiles, x, y);
+                        entropyGrid[x, y] = GetTileEntropy(x, y);
                     }
                 }
                 else
@@ -178,18 +213,25 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         return entropyGrid;
     }
 
-    private List<DGTile> GetTileEntropy(DGTile[,] currentTiles, int xPos, int yPos)
+    private List<DGTile> GetTileEntropy(int xPos, int yPos)
+    {
+        DGTile tileConstraints = BuildTileConstraints(xPos, yPos);
+
+        return TileSet.GetMatching(tileConstraints);
+    }
+
+    private DGTile BuildTileConstraints(int xPos, int yPos)
     {
         DGTile tileConstraints = new DGTile();
-        
-        int currentTilesWidth = currentTiles.GetLength(0);
-        int currentTilesHeight = currentTiles.GetLength(1);
+
+        int currentTilesWidth = tileGrid.GetLength(0);
+        int currentTilesHeight = tileGrid.GetLength(1);
 
         for (int x = 0; x < 3; x++)
         {
             for (int y = 0; y < 3; y++)
             {
-                if (!(x == 1  && y == 1))
+                if (!(x == 1 && y == 1))
                 {
                     int adjacentX = xPos + (x - 1);
                     int adjacentY = yPos + (y - 1);
@@ -198,9 +240,9 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
                     {
                         if (EnabledGrid[adjacentX, adjacentY])
                         {
-                            DGTile adjacentTile = currentTiles[adjacentX, adjacentY];
+                            DGTile adjacentTile = tileGrid[adjacentX, adjacentY];
 
-                            if (adjacentTile != null) 
+                            if (adjacentTile != null)
                             {
                                 tileConstraints.Values[x, y] = adjacentTile.Values[2 - x, 2 - y];
                                 tileConstraints.IsContraint[x, y] = true;
@@ -209,19 +251,19 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
                         else
                         {
                             tileConstraints.Values[x, y] = false;
-                            tileConstraints.IsContraint[x, y] = false;
+                            tileConstraints.IsContraint[x, y] = true;
                         }
                     }
                     else
                     {
                         tileConstraints.Values[x, y] = false;
-                        tileConstraints.IsContraint[x, y] = false;
+                        tileConstraints.IsContraint[x, y] = true;
                     }
                 }
             }
         }
 
-        return TileSet.GetMatching(tileConstraints);
+        return tileConstraints;
     }
 
     private (int, Vector2Int) FindLowestEntropyCell(List<DGTile>[,] entropyGrid)
@@ -239,7 +281,7 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
                     if (count == 0)
                     {
-                        return (0, new Vector2Int(0, 0));
+                        return (0, new Vector2Int(x, y));
                     }
 
                     if (count < lowestEntropy)
@@ -265,40 +307,98 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         return tiles[selection];
     }
 
-    public void OnBeforeSerialize()
+    private void LogMissingCell(int xPos, int yPos)
     {
-        if (EnabledGrid == null)
+        DGTile tileConstraints = BuildTileConstraints(xPos, yPos);
+
+        string message = $"Wave Function Collapse failed at position ({xPos}, {yPos}). A tile of this shape is require:\r\n";
+        message += "([W] = Wall, [F] = Floor, [C] = Centre, [?] = Any)\r\n\r\n";
+
+        for (int y = 2; y >= 0; y--)
         {
-            return;
+            string row = "";
+
+            for (int x = 0; x < 3; x++)
+            {
+                if (x == 1 && y == 1)
+                {
+                    row += "[C] ";
+                }
+                else if (tileConstraints.IsContraint[x, y])
+                {
+                    row += tileConstraints.Values[x, y] ? "[F] " : "[W] ";
+                }
+                else
+                {
+                    row += "[?] ";
+                }
+            }
+
+            message += row + "\r\n";
         }
 
-        serialisedEnabledGridWidth = EnabledGrid.GetLength(0);
-        serialisedEnabledGridHeight = EnabledGrid.GetLength(1);
-        serialisedEnabledGrid = new bool[serialisedEnabledGridWidth * serialisedEnabledGridHeight];
+        Debug.LogError(message);
+    }
 
-        for (int x = 0; x < serialisedEnabledGridWidth; x++)
+    public void OnBeforeSerialize()
+    {
+        if (EnabledGrid != null)
         {
-            for (int y = 0;y < serialisedEnabledGridHeight; y++)
+            serialisedEnabledGridWidth = EnabledGrid.GetLength(0);
+            serialisedEnabledGridHeight = EnabledGrid.GetLength(1);
+            serialisedEnabledGrid = new bool[serialisedEnabledGridWidth * serialisedEnabledGridHeight];
+
+            for (int x = 0; x < serialisedEnabledGridWidth; x++)
             {
-                serialisedEnabledGrid[y * serialisedEnabledGridWidth + x] = EnabledGrid[x, y];
+                for (int y = 0; y < serialisedEnabledGridHeight; y++)
+                {
+                    serialisedEnabledGrid[y * serialisedEnabledGridWidth + x] = EnabledGrid[x, y];
+                }
+            }
+        }
+
+
+        if (tileGrid != null)
+        {
+            serialisedTileGridWidth = tileGrid.GetLength(0);
+            serialisedTileGridHeight = tileGrid.GetLength(1);
+            serialisedTileGrid = new DGTile[serialisedTileGridWidth * serialisedTileGridHeight];
+
+            for (int x = 0; x < serialisedTileGridWidth; x++)
+            {
+                for (int y = 0; y < serialisedTileGridHeight; y++)
+                {
+                    serialisedTileGrid[y * serialisedTileGridWidth + x] = tileGrid[x, y];
+                }
             }
         }
     }
 
     public void OnAfterDeserialize()
     {
-        if (serialisedEnabledGrid == null || serialisedEnabledGridWidth <= 0 || serialisedEnabledGridHeight <= 0)
+        if (serialisedEnabledGrid != null && serialisedEnabledGridWidth > 0 && serialisedEnabledGridHeight > 0)
         {
-            return;
+            EnabledGrid = new bool[serialisedEnabledGridWidth, serialisedEnabledGridHeight];
+
+            for (int x = 0; x < serialisedEnabledGridWidth; x++)
+            {
+                for (int y = 0; y < serialisedEnabledGridHeight; y++)
+                {
+                    EnabledGrid[x, y] = serialisedEnabledGrid[y * serialisedEnabledGridWidth + x];
+                }
+            }
         }
 
-        EnabledGrid = new bool[serialisedEnabledGridWidth, serialisedEnabledGridHeight];
-
-        for (int x = 0; x < serialisedEnabledGridWidth; x++)
+        if (serialisedTileGrid != null && serialisedTileGridWidth > 0 && serialisedTileGridHeight > 0)
         {
-            for (int y = 0; y < serialisedEnabledGridHeight; y++)
+            tileGrid = new DGTile[serialisedTileGridWidth, serialisedTileGridHeight];
+
+            for (int x = 0; x < serialisedTileGridWidth; x++)
             {
-                EnabledGrid[x, y] = serialisedEnabledGrid[y * serialisedEnabledGridWidth + x];
+                for (int y = 0; y < serialisedTileGridHeight; y++)
+                {
+                    tileGrid[x, y] = serialisedTileGrid[y * serialisedTileGridWidth + x];
+                }
             }
         }
     }

@@ -107,6 +107,6 @@ public class DGRoomCell : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(new Vector3(CellWidth / 2, 0f, CellWidth / 2), new Vector3(CellWidth, 0f, CellWidth));
+        Gizmos.DrawWireCube(new Vector3(CellWidth / 2f, 0f, CellWidth / 2f), new Vector3(CellWidth, 0f, CellWidth));
     }
 }

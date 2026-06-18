@@ -16,7 +16,7 @@ public class DGTileSet : ScriptableObject
             {
                 DGTile rotation = tile.RotateTile(i);
 
-                if (rotation.MatchesConstraints(rotation))
+                if (rotation.MatchesConstraints(surroundingTiles))
                 {
                     matchingTiles.Add(rotation);
                 }
