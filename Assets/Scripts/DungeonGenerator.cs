@@ -25,8 +25,8 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     private int drunkardsWalkStepCount = 0;
     [SerializeField, Range(0, 1)]
     private float drunkardsWalkMaxGridFill = 1f;
-    [SerializeField, Min(-1)]
-    private int drunkardsWalkSeed = -1;
+    [SerializeField]
+    private int drunkardsWalkSeed = 0;
 
     // ----- WFC Settings -----
     [SerializeField]
@@ -41,13 +41,12 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     [SerializeField, HideInInspector]
     private int serialisedTileGridHeight;
 
-    [SerializeField, Min(-1)]
-    private int wfcSeed = -1;
+    [SerializeField]
+    private int wfcSeed = 0;
 
     // ----- 3D Conversion -----
     [SerializeField]
     private DGRoomCell roomCell = null;
-
 
     public void OnValidate()
     {
@@ -104,6 +103,8 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
     public void PerformDrunkardsWalk()
     {
+        Random.InitState(drunkardsWalkSeed);
+        
         ResetGrid(false);
         
         DGDrunkardsWalk[] drunkards = new DGDrunkardsWalk[drunkardsWalkTargets.Count];
@@ -141,6 +142,8 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         {
             return;
         }
+        
+        Random.InitState(wfcSeed);
 
         List<DGTile>[,] entropyGrid = CreateEmptyEntropyGrid();
         if (entropyGrid.GetLength(0) == 0 || entropyGrid.GetLength(1) == 0)

@@ -19,14 +19,17 @@ public class DungeonGeneratorEditor : Editor
     private VisualElement gridContainer;
     private VisualElement drunkardTargetsContainer;
 
-    private Button wfcButton;
+    private Button wfcSeededButton;
+    private Button wfcRandomButton;
 
     private SerializedProperty gridWidth;
     private SerializedProperty gridHeight;
     private SerializedProperty drunkardsWalkStepCount;
     private SerializedProperty drunkardsWalkMaxGridFill;
     private SerializedProperty drunkardsWalkTargets;
+    private SerializedProperty drunkardsWalkSeed;
     private SerializedProperty tileSet;
+    private SerializedProperty wfcSeed;
 
     private bool manuallyEditedGrid = true;
 
@@ -48,7 +51,9 @@ public class DungeonGeneratorEditor : Editor
         drunkardsWalkStepCount = serializedObject.FindProperty("drunkardsWalkStepCount");
         drunkardsWalkMaxGridFill = serializedObject.FindProperty("drunkardsWalkMaxGridFill");
         drunkardsWalkTargets = serializedObject.FindProperty("drunkardsWalkTargets");
+        drunkardsWalkSeed = serializedObject.FindProperty("drunkardsWalkSeed");
         tileSet = serializedObject.FindProperty("tileSet");
+        wfcSeed = serializedObject.FindProperty("wfcSeed");
 
         root.Add(CreateSeparator(0, 10));
 
@@ -97,7 +102,8 @@ public class DungeonGeneratorEditor : Editor
         });
         root.TrackPropertyValue(tileSet, value =>
         {
-            wfcButton.SetEnabled(value.objectReferenceValue != null);
+            wfcSeededButton.SetEnabled(value.objectReferenceValue != null);
+            wfcRandomButton.SetEnabled(value.objectReferenceValue != null);
         });
         root.Bind(serializedObject);
         return root;
@@ -237,9 +243,14 @@ public class DungeonGeneratorEditor : Editor
         controls.Add(drunkardTargetsContainer);
         DrunkardsWalkTargetControls();
 
-        Button drunkardsWalkButton = new Button();
-        drunkardsWalkButton.text = "Perform Drunkards Walk";
-        drunkardsWalkButton.RegisterCallback<ClickEvent>(_ =>
+        controls.Add(CreateSeparator(1, 10));
+
+        PropertyField seedField = new PropertyField(drunkardsWalkSeed, "Seed");
+        controls.Add(seedField);
+
+        Button drunkardsWalkSeededButton = new Button();
+        drunkardsWalkSeededButton.text = "Perform Drunkards Walk Using Seed";
+        drunkardsWalkSeededButton.RegisterCallback<ClickEvent>(_ =>
         {
             if (manuallyEditedGrid)
             {
@@ -259,7 +270,34 @@ public class DungeonGeneratorEditor : Editor
                 manuallyEditedGrid = false;
             }
         });
-        controls.Add(drunkardsWalkButton);
+        controls.Add(drunkardsWalkSeededButton);
+
+        Button drunkardsWalkRandomButton = new Button();
+        drunkardsWalkRandomButton.text = "Perform Drunkards Walk Random Random Seed";
+        drunkardsWalkRandomButton.RegisterCallback<ClickEvent>(_ =>
+        {
+            if (manuallyEditedGrid)
+            {
+                manuallyEditedGrid = !EditorUtility.DisplayDialog(
+                    "Are you sure?",
+                    "This action will overwrite the current grid layout. Are you sure you want to continue?",
+                    "Continue",
+                    "Cancel"
+                );
+            }
+
+            if (!manuallyEditedGrid)
+            {
+                drunkardsWalkSeed.intValue = Random.Range(int.MinValue, int.MaxValue);
+                serializedObject.ApplyModifiedProperties();
+
+                targetScript.PerformDrunkardsWalk();
+                EditorUtility.SetDirty(targetScript);
+                CreateGrid(targetScript);
+                manuallyEditedGrid = false;
+            }
+        });
+        controls.Add(drunkardsWalkRandomButton);
 
         return controls;
     }
@@ -293,6 +331,7 @@ public class DungeonGeneratorEditor : Editor
         }
 
         serializedObject.ApplyModifiedProperties();
+        drunkardTargetsContainer.Bind(serializedObject);
     }
 
     private VisualElement CreateWFCControls(DungeonGenerator targetScript)
@@ -309,10 +348,13 @@ public class DungeonGeneratorEditor : Editor
         PropertyField tileSetField = new PropertyField(tileSet, "Tile Set");
         controls.Add(tileSetField);
 
-        wfcButton = new Button();
-        wfcButton.text = "Perform Wave Function Collapse";
-        wfcButton.SetEnabled(tileSet.objectReferenceValue != null);
-        wfcButton.RegisterCallback<ClickEvent>(_ =>
+        PropertyField seedField = new PropertyField(wfcSeed, "Seed");
+        controls.Add(seedField);
+
+        wfcSeededButton = new Button();
+        wfcSeededButton.text = "Perform Wave Function Collapse Using Seed";
+        wfcSeededButton.SetEnabled(tileSet.objectReferenceValue != null);
+        wfcSeededButton.RegisterCallback<ClickEvent>(_ =>
         {
             bool confirmed = EditorUtility.DisplayDialog(
                 "Are you sure?",
@@ -326,7 +368,29 @@ public class DungeonGeneratorEditor : Editor
                 targetScript.PerformWaveFunctionCollapse();
             }
         });
-        controls.Add(wfcButton);
+        controls.Add(wfcSeededButton);
+
+        wfcRandomButton = new Button();
+        wfcRandomButton.text = "Perform Wave Function Collapse Using Seed";
+        wfcRandomButton.SetEnabled(tileSet.objectReferenceValue != null);
+        wfcRandomButton.RegisterCallback<ClickEvent>(_ =>
+        {
+            bool confirmed = EditorUtility.DisplayDialog(
+                "Are you sure?",
+                "This action will overwrite the current layout. Are you sure you want to continue?",
+                "Continue",
+                "Cancel"
+            );
+
+            if (confirmed)
+            {
+                wfcSeed.intValue = Random.Range(int.MinValue, int.MaxValue);
+                serializedObject.ApplyModifiedProperties();
+
+                targetScript.PerformWaveFunctionCollapse();
+            }
+        });
+        controls.Add(wfcRandomButton);
 
         return controls;
     }
