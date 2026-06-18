@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: DGTileSet-Basic
   m_EditorClassIdentifier: Assembly-CSharp::DGTileSet
   Tiles:
-  - serialisedTile: 000000000101000100
-  - serialisedTile: 000100000100000100
-  - serialisedTile: 000100010100000100
-  - serialisedTile: 000100010101000100
-  - serialisedTile: 000100000100000000
+  - Weight: 1
+    serialisedTile: 000000000101000100
+  - Weight: 1
+    serialisedTile: 000100000100000100
+  - Weight: 1
+    serialisedTile: 000100010100000100
+  - Weight: 1
+    serialisedTile: 000100010101000100
+  - Weight: 0
+    serialisedTile: 000100000100000000

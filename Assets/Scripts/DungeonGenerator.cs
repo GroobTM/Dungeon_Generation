@@ -320,8 +320,26 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
     private DGTile SelectRandomTile(List<DGTile> tiles)
     {
-        int selection = Random.Range(0, tiles.Count);
-        return tiles[selection];
+        float totalWeight = 0f;
+        foreach (DGTile tile in tiles)
+        {
+            totalWeight += tile.Weight;
+        }
+
+        float selectedValue = Random.Range(0f, totalWeight);
+
+        totalWeight = 0f;
+        foreach(DGTile tile in tiles)
+        {
+            totalWeight += tile.Weight;
+
+            if (selectedValue <= totalWeight)
+            {
+                return tile;
+            }
+        }
+
+        return tiles[0];
     }
 
     private void LogMissingCell(int xPos, int yPos)
