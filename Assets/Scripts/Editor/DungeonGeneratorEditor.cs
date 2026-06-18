@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -24,6 +23,9 @@ public class DungeonGeneratorEditor : Editor
 
     private SerializedProperty gridWidth;
     private SerializedProperty gridHeight;
+    private SerializedProperty drunkardsWalkStepCount;
+    private SerializedProperty drunkardsWalkMaxGridFill;
+    private SerializedProperty drunkardsWalkTargets;
     private SerializedProperty tileSet;
 
     private bool manuallyEditedGrid = true;
@@ -41,9 +43,12 @@ public class DungeonGeneratorEditor : Editor
         VisualElement root = new VisualElement();
         DungeonGenerator targetScript = (DungeonGenerator)target;
 
-        gridWidth = serializedObject.FindProperty("GridWidth");
-        gridHeight = serializedObject.FindProperty("GridHeight");
-        tileSet = serializedObject.FindProperty("TileSet");
+        gridWidth = serializedObject.FindProperty("gridWidth");
+        gridHeight = serializedObject.FindProperty("gridHeight");
+        drunkardsWalkStepCount = serializedObject.FindProperty("drunkardsWalkStepCount");
+        drunkardsWalkMaxGridFill = serializedObject.FindProperty("drunkardsWalkMaxGridFill");
+        drunkardsWalkTargets = serializedObject.FindProperty("drunkardsWalkTargets");
+        tileSet = serializedObject.FindProperty("tileSet");
 
         root.Add(CreateSeparator(0, 10));
 
@@ -82,12 +87,12 @@ public class DungeonGeneratorEditor : Editor
 
         root.TrackPropertyValue(gridWidth, _ =>
         {
-            DrunkardsWalkTargetControls(targetScript);
+            DrunkardsWalkTargetControls();
             CreateGrid(targetScript);
         });
         root.TrackPropertyValue(gridHeight, _ => 
         {
-            DrunkardsWalkTargetControls(targetScript);
+            DrunkardsWalkTargetControls();
             CreateGrid(targetScript);
         });
         root.TrackPropertyValue(tileSet, value =>
@@ -111,17 +116,19 @@ public class DungeonGeneratorEditor : Editor
 
     private void CreateGrid(DungeonGenerator targetScript)
     {
-        if (targetScript.EnabledGrid == null)
+        if (targetScript.EnabledGrid == null
+            || targetScript.EnabledGrid.GetLength(0) != gridWidth.intValue
+            || targetScript.EnabledGrid.GetLength(1) != gridHeight.intValue)
         {
             targetScript.OnValidate();
         }
 
         gridContainer.Clear();
-        gridContainer.style.width = targetScript.GridWidth * gridCellSize;
+        gridContainer.style.width = gridWidth.intValue * gridCellSize;
 
-        for (int y = 0; y < targetScript.EnabledGrid.GetLength(1); y++)
+        for (int y = 0; y < gridHeight.intValue; y++)
         {
-            for (int x = 0; x < targetScript.EnabledGrid.GetLength(0); x++)
+            for (int x = 0; x < gridWidth.intValue; x++)
             {
                 VisualElement gridCell = new VisualElement();
 
@@ -203,58 +210,23 @@ public class DungeonGeneratorEditor : Editor
         VisualElement controls = new VisualElement();
         controls.style.flexDirection = FlexDirection.Column;
 
-        SliderInt stepSlider = new SliderInt("Drunkard's Walk Max Steps", 0, 10000);
-        stepSlider.value = targetScript.DrunkardsWalkParameters.StepCount;
-        stepSlider.showInputField = true;
-        stepSlider.AddToClassList(Slider.alignedFieldUssClassName);
-        stepSlider.RegisterValueChangedCallback(value =>
-        {
-            targetScript.DrunkardsWalkParameters.StepCount = value.newValue;
-            EditorUtility.SetDirty(targetScript);
-        });
-        controls.Add(stepSlider);
+        PropertyField stepField = new PropertyField(drunkardsWalkStepCount, "Max Steps");
+        controls.Add(stepField);
 
-        Slider maxGridFillSlider = new Slider("Max Grid Fill Percentage", 0, 1);
-        maxGridFillSlider.value = targetScript.DrunkardsWalkParameters.MaxGridFill;
-        maxGridFillSlider.showInputField = true;
-        maxGridFillSlider.AddToClassList(Slider.alignedFieldUssClassName);
-        maxGridFillSlider.RegisterValueChangedCallback(value =>
-        {
-            targetScript.DrunkardsWalkParameters.MaxGridFill = value.newValue;
-            EditorUtility.SetDirty(targetScript);
-            serializedObject.Update();
-        });
-        controls.Add(maxGridFillSlider);
+        PropertyField maxGridFillField = new PropertyField(drunkardsWalkMaxGridFill, "Max Grid Fill Percentage");
+        controls.Add(maxGridFillField);
 
         SliderInt drunkardsSlider = new SliderInt("Drunkard Count", 1, MAX_DRUNKARDS);
-        drunkardsSlider.value = targetScript.DrunkardsWalkParameters.Targets.Count;
+        drunkardsSlider.value = drunkardsWalkTargets.arraySize;
         drunkardsSlider.showInputField = true;
         drunkardsSlider.AddToClassList(Slider.alignedFieldUssClassName);
         drunkardsSlider.RegisterValueChangedCallback(value =>
         {
-            int diff = value.newValue - value.previousValue;
-
-            if (diff != 0)
+            if (drunkardsWalkTargets.arraySize != value.newValue)
             {
-
-                if (diff > 0)
-                {
-                    for (int i = 0; i < diff; i++)
-                    {
-                        targetScript.DrunkardsWalkParameters.Targets.Add(new DGDrunkardsWalkTarget(new Vector2Int(-1, -1), 0.5f));
-                    }
-                }
-                else if (diff < 0)
-                {
-                    for (int i = 0; i > diff; i--)
-                    {
-                        targetScript.DrunkardsWalkParameters.Targets.RemoveAt(targetScript.DrunkardsWalkParameters.Targets.Count - 1);
-                    }
-                }
-
-                EditorUtility.SetDirty(targetScript);
-                serializedObject.Update();
-                DrunkardsWalkTargetControls(targetScript);
+                drunkardsWalkTargets.arraySize = value.newValue;
+                serializedObject.ApplyModifiedProperties();
+                DrunkardsWalkTargetControls();
             }
         });
         controls.Add(drunkardsSlider);
@@ -263,7 +235,7 @@ public class DungeonGeneratorEditor : Editor
 
         drunkardTargetsContainer = new VisualElement();
         controls.Add(drunkardTargetsContainer);
-        DrunkardsWalkTargetControls(targetScript);
+        DrunkardsWalkTargetControls();
 
         Button drunkardsWalkButton = new Button();
         drunkardsWalkButton.text = "Perform Drunkards Walk";
@@ -292,46 +264,35 @@ public class DungeonGeneratorEditor : Editor
         return controls;
     }
 
-    private void DrunkardsWalkTargetControls(DungeonGenerator targetScript)
+    private void DrunkardsWalkTargetControls()
     {
+        serializedObject.Update();
         drunkardTargetsContainer.Clear();
 
-        List<DGDrunkardsWalkTarget> targets = targetScript.DrunkardsWalkParameters.Targets;
-        int maxX = targetScript.EnabledGrid.GetLength(0);
-        int maxY = targetScript.EnabledGrid.GetLength(1);
+        int maxX = gridWidth.intValue;
+        int maxY = gridHeight.intValue;
 
-        for (int i = 0; i < targets.Count; i++)
+        for (int i = 0; i < drunkardsWalkTargets.arraySize; i++)
         {
-            int localI = i;
+            SerializedProperty target = drunkardsWalkTargets.GetArrayElementAtIndex(i);
+            SerializedProperty position = target.FindPropertyRelative("Position");
+            SerializedProperty bias = target.FindPropertyRelative("Bias");
 
-            targets[i].Position = ClampVector2Int(targets[i].Position, maxX, maxY);
+            position.vector2IntValue = ClampVector2Int(position.vector2IntValue, maxX, maxY);
 
-            Vector2IntField targetField = new Vector2IntField($"Drunkard {i + 1}'s Target");
-            targetField.value = targets[i].Position;
-            targetField.AddToClassList(Vector2IntField.alignedFieldUssClassName);
-            targetField.RegisterValueChangedCallback(value =>
+            PropertyField positionField = new PropertyField(position, $"Drunkard {i + 1}'s Target");
+            positionField.RegisterValueChangeCallback(value =>
             {
-                Vector2Int clampedValue = ClampVector2Int(value.newValue, maxX, maxY);
-                targetField.SetValueWithoutNotify(clampedValue);
-                targets[localI].Position = clampedValue;
-                EditorUtility.SetDirty(targetScript);
-                serializedObject.Update();
+                value.changedProperty.vector2IntValue = ClampVector2Int(value.changedProperty.vector2IntValue, maxX, maxY);
+                value.changedProperty.serializedObject.ApplyModifiedProperties();
             });
-            drunkardTargetsContainer.Add(targetField);
+            drunkardTargetsContainer.Add(positionField);
 
-            Slider biasField = new Slider($"Drunkard {i + 1}'s Bias", 0, 1);
-            biasField.value = targets[i].Bias;
-            biasField.showInputField = true;
-            biasField.AddToClassList(Slider.alignedFieldUssClassName);
-            biasField.RegisterValueChangedCallback(value =>
-            {
-                targets[localI].Bias = value.newValue;
-                EditorUtility.SetDirty(targetScript);
-                serializedObject.Update();
-            });
+            PropertyField biasField = new PropertyField(bias, $"Drunkard {i + 1}'s Bias");
             drunkardTargetsContainer.Add(biasField);
-
         }
+
+        serializedObject.ApplyModifiedProperties();
     }
 
     private VisualElement CreateWFCControls(DungeonGenerator targetScript)

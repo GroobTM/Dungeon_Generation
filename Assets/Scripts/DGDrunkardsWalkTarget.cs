@@ -11,5 +11,6 @@ public class DGDrunkardsWalkTarget
     }
 
     public Vector2Int Position;
+    [Range(0f, 1f)]
     public float Bias;
 }

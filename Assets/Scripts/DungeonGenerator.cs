@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 {
-    [Range(1, 50)]
-    public int GridWidth = 10;
-    [Range(1, 50)]
-    public int GridHeight = 10;
+    // ----- Grid Settings -----
+    [SerializeField, Range(1, 50)]
+    private int gridWidth = 10;
+    [SerializeField, Range(1, 50)]
+    private int gridHeight = 10;
     public bool[,] EnabledGrid { get; private set; } = null;
 
     [SerializeField, HideInInspector]
@@ -16,9 +17,20 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     [SerializeField, HideInInspector]
     private int serialisedEnabledGridHeight;
 
-    public DGDrunkardsWalkParameters DrunkardsWalkParameters = new DGDrunkardsWalkParameters();
+    // ----- Drunkard's Walk Settings -----
+    [SerializeField]
+    private List<DGDrunkardsWalkTarget> drunkardsWalkTargets = new List<DGDrunkardsWalkTarget>() { new DGDrunkardsWalkTarget(new Vector2Int(-1, -1), 0.5f) };
 
-    public DGTileSet TileSet = null;
+    [SerializeField, Range(0, 10000)]
+    private int drunkardsWalkStepCount = 0;
+    [SerializeField, Range(0, 1)]
+    private float drunkardsWalkMaxGridFill = 1f;
+    [SerializeField, Min(-1)]
+    private int drunkardsWalkSeed = -1;
+
+    // ----- WFC Settings -----
+    [SerializeField]
+    private DGTileSet tileSet = null;
 
     private DGTile[,] tileGrid = null;
 
@@ -30,19 +42,21 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     private int serialisedTileGridHeight;
 
     [SerializeField, Min(-1)]
-    private int dunkardsWalkSeed = -1;
+    private int wfcSeed = -1;
 
-    public DGRoomCell RoomCell = null;
+    // ----- 3D Conversion -----
+    [SerializeField]
+    private DGRoomCell roomCell = null;
 
 
     public void OnValidate()
     {
-        bool[,] newEnabledGrid = new bool[GridWidth, GridHeight];
+        bool[,] newEnabledGrid = new bool[gridWidth, gridHeight];
 
         if (EnabledGrid != null)
         {
-            int xLimit = Mathf.Min(GridWidth, EnabledGrid.GetLength(0));
-            int yLimit = Mathf.Min(GridHeight, EnabledGrid.GetLength(1));
+            int xLimit = Mathf.Min(gridWidth, EnabledGrid.GetLength(0));
+            int yLimit = Mathf.Min(gridHeight, EnabledGrid.GetLength(1));
 
             for (int x = 0; x < xLimit; x++)
             {
@@ -60,7 +74,7 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     {
         if (tileGrid != null)
         {
-            float visualiseSize = RoomCell != null ? RoomCell.CellWidth : 1f;
+            float visualiseSize = roomCell != null ? roomCell.CellWidth : 1f;
 
             for (int x = 0; x < tileGrid.GetLength(0); x++)
             {
@@ -92,22 +106,22 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     {
         ResetGrid(false);
         
-        DGDrunkardsWalk[] drunkards = new DGDrunkardsWalk[DrunkardsWalkParameters.Targets.Count];
+        DGDrunkardsWalk[] drunkards = new DGDrunkardsWalk[drunkardsWalkTargets.Count];
         DGSharedCounter sharedDrunkardCellCounter = new DGSharedCounter();
 
         for (int i = 0; i < drunkards.Length; i++)
         {
             drunkards[i] = new DGDrunkardsWalk(
-                DrunkardsWalkParameters.Targets[i].Position,
-                DrunkardsWalkParameters.Targets[i].Bias,
+                drunkardsWalkTargets[i].Position,
+                drunkardsWalkTargets[i].Bias,
                 EnabledGrid,
                 sharedDrunkardCellCounter
             );
         }
 
         int totalCells = EnabledGrid.GetLength(0) * EnabledGrid.GetLength(1);
-        int maxCells = Mathf.RoundToInt(totalCells * DrunkardsWalkParameters.MaxGridFill);
-        for (int i = 0; i < DrunkardsWalkParameters.StepCount; i++)
+        int maxCells = Mathf.RoundToInt(totalCells * drunkardsWalkMaxGridFill);
+        for (int i = 0; i < drunkardsWalkStepCount; i++)
         {
             foreach (DGDrunkardsWalk drunkard in drunkards)
             {
@@ -123,7 +137,7 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
     public void PerformWaveFunctionCollapse()
     {
-        if (TileSet == null)
+        if (tileSet == null)
         {
             return;
         }
@@ -217,7 +231,7 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     {
         DGTile tileConstraints = BuildTileConstraints(xPos, yPos);
 
-        return TileSet.GetMatching(tileConstraints);
+        return tileSet.GetMatching(tileConstraints);
     }
 
     private DGTile BuildTileConstraints(int xPos, int yPos)
