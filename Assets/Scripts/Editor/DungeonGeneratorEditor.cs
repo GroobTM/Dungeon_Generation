@@ -21,6 +21,7 @@ public class DungeonGeneratorEditor : Editor
 
     private Button wfcSeededButton;
     private Button wfcRandomButton;
+    private Button convertTo3DButton;
 
     private SerializedProperty gridWidth;
     private SerializedProperty gridHeight;
@@ -30,6 +31,7 @@ public class DungeonGeneratorEditor : Editor
     private SerializedProperty drunkardsWalkSeed;
     private SerializedProperty tileSet;
     private SerializedProperty wfcSeed;
+    private SerializedProperty roomCell;
 
     private bool manuallyEditedGrid = true;
 
@@ -54,6 +56,7 @@ public class DungeonGeneratorEditor : Editor
         drunkardsWalkSeed = serializedObject.FindProperty("drunkardsWalkSeed");
         tileSet = serializedObject.FindProperty("tileSet");
         wfcSeed = serializedObject.FindProperty("wfcSeed");
+        roomCell = serializedObject.FindProperty("roomCell");
 
         root.Add(CreateSeparator(0, 10));
 
@@ -90,6 +93,10 @@ public class DungeonGeneratorEditor : Editor
 
         root.Add(CreateWFCControls(targetScript));
 
+        root.Add(CreateSeparator(2, 10));
+
+        root.Add(Create3DConverterControls(targetScript));
+
         root.TrackPropertyValue(gridWidth, _ =>
         {
             DrunkardsWalkTargetControls();
@@ -104,6 +111,10 @@ public class DungeonGeneratorEditor : Editor
         {
             wfcSeededButton.SetEnabled(value.objectReferenceValue != null);
             wfcRandomButton.SetEnabled(value.objectReferenceValue != null);
+        });
+        root.TrackPropertyValue(roomCell, value =>
+        {
+            convertTo3DButton.SetEnabled(value.objectReferenceValue != null);
         });
         root.Bind(serializedObject);
         return root;
@@ -334,6 +345,14 @@ public class DungeonGeneratorEditor : Editor
         drunkardTargetsContainer.Bind(serializedObject);
     }
 
+    private Vector2Int ClampVector2Int(Vector2Int value, int maxX, int maxY)
+    {
+        return new Vector2Int(
+            Mathf.Clamp(value.x, -1, maxX - 1),
+            Mathf.Clamp(value.y, -1, maxY - 1)
+        );
+    }
+
     private VisualElement CreateWFCControls(DungeonGenerator targetScript)
     {
         VisualElement controls = new VisualElement();
@@ -395,11 +414,115 @@ public class DungeonGeneratorEditor : Editor
         return controls;
     }
 
-    private Vector2Int ClampVector2Int(Vector2Int value, int maxX, int maxY)
+    private VisualElement Create3DConverterControls(DungeonGenerator targetScript)
     {
-        return new Vector2Int(
-            Mathf.Clamp(value.x, -1, maxX - 1),
-            Mathf.Clamp(value.y, -1, maxY - 1)
-        );
+        VisualElement controls = new VisualElement();
+
+        Label heading = new Label("3D Conversion");
+        heading.style.fontSize = headingTextSize * 0.9f;
+        controls.Add(heading);
+
+        controls.Add(CreateSeparator(0, 10));
+
+        PropertyField roomCellField = new PropertyField(roomCell, "Room Cell");
+        controls.Add(roomCellField);
+
+        convertTo3DButton = new Button();
+        convertTo3DButton.text = "Convert to 3D";
+        convertTo3DButton.SetEnabled(roomCell.objectReferenceValue != null);
+        convertTo3DButton.RegisterCallback<ClickEvent>(_ =>
+        {
+            Transform parent = targetScript.transform;
+            DGRoomCell[] childCells = parent.GetComponentsInChildren<DGRoomCell>(true);
+
+            if (childCells != null && childCells.Length > 0)
+            {
+                int confirmed = EditorUtility.DisplayDialogComplex(
+                    "Existing Layout Found",
+                    "An existing layout was found. Would you like to remove the existing layout?",
+                    "Remove",
+                    "Cancel",
+                    "Keep"
+                );
+
+                switch (confirmed)
+                {
+                    case 0:
+                        for (int i = 0; i < childCells.Length; i++)
+                        {
+                            if (childCells[i] != null)
+                            {
+                                DestroyImmediate(childCells[i].gameObject);
+                            }
+                        }
+
+                        targetScript.Perform3DConversion();
+                        break;
+
+                    case 1:
+                        break;
+
+                    case 2:
+                        GameObject layout = new GameObject("Layout");
+                        layout.transform.SetParent(parent, false);
+
+                        bool layoutUsed = false;
+                        for (int i = 0; i < childCells.Length; i++)
+                        {
+                            if (childCells[i].transform.parent == targetScript.transform)
+                            {
+                                layoutUsed = true;
+                                childCells[i].transform.SetParent(layout.transform, false);
+                            }
+                        }
+
+                        if (layoutUsed)
+                        {
+                            layout = new GameObject("Layout");
+                            layout.transform.SetParent(parent, false);
+                        }
+
+                        targetScript.Perform3DConversion(layout.transform);
+                        break;
+                }
+            }
+            else
+            {
+                targetScript.Perform3DConversion();
+            }
+
+                
+        });
+        controls.Add(convertTo3DButton);
+
+        Button remove3DLayout = new Button();
+        remove3DLayout.text = "Remove Layout";
+        remove3DLayout.RegisterCallback<ClickEvent>(_ => {
+            DGRoomCell[] childCells = targetScript.transform.GetComponentsInChildren<DGRoomCell>(true);
+
+            if (childCells != null && childCells.Length > 0)
+            {
+                bool confirmed = EditorUtility.DisplayDialog(
+                    "Are you sure?",
+                    "This action will remove the current layout. Are you sure you want to continue?",
+                    "Continue",
+                    "Cancel"
+                );
+
+                if (confirmed)
+                {
+                    for (int i = 0; i < childCells.Length; i++)
+                    {
+                        if (childCells[i] != null)
+                        {
+                            DestroyImmediate(childCells[i].gameObject);
+                        }
+                    }
+                }
+            }
+        });
+        controls.Add(remove3DLayout);
+
+        return controls;
     }
 }

@@ -71,16 +71,18 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
 
     public void OnDrawGizmos()
     {
-        if (tileGrid != null)
+        if (tileGrid == null)
         {
-            float visualiseSize = roomCell != null ? roomCell.CellWidth : 1f;
+            return;
+        }
 
-            for (int x = 0; x < tileGrid.GetLength(0); x++)
+        float visualiseSize = roomCell != null ? roomCell.CellWidth : 1f;
+
+        for (int x = 0; x < tileGrid.GetLength(0); x++)
+        {
+            for (int y = 0; y < tileGrid.GetLength(1); y++)
             {
-                for (int y = 0; y < tileGrid.GetLength(1); y++)
-                {
-                    tileGrid[x, y]?.DrawGizmo(visualiseSize, x * visualiseSize, y * visualiseSize);
-                }
+                tileGrid[x, y]?.DrawGizmo(visualiseSize, x * visualiseSize, y * visualiseSize);
             }
         }
     }
@@ -373,6 +375,31 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         }
 
         Debug.LogError(message);
+    }
+
+    public void Perform3DConversion()
+    {
+        Perform3DConversion(transform);
+    }
+
+    public void Perform3DConversion(Transform parent)
+    {
+        if (roomCell == null || tileGrid == null)
+        {
+            return;
+        }
+
+        for (int x = 0; x < tileGrid.GetLength(0); x++)
+        {
+            for (int y = 0; y < tileGrid.GetLength(1); y++)
+            {
+                if (tileGrid[x, y] != null)
+                {
+                    DGRoomCell room = Instantiate(roomCell, new Vector3(roomCell.CellWidth * x, 0, roomCell.CellWidth * y), Quaternion.identity, parent);
+                    room.Configure(tileGrid[x, y]);
+                }
+            }
+        }
     }
 
     public void OnBeforeSerialize()

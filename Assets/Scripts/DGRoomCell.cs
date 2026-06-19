@@ -33,75 +33,22 @@ public class DGRoomCell : MonoBehaviour
     [SerializeField]
     private List<GameObject> northWestDetails = new List<GameObject>();
 
-    private void Start()
+    public void Configure(DGTile tile)
     {
-        northWall.SetActive(false);
-        eastWall.SetActive(false);
-        southWall.SetActive(false);
-        westWall.SetActive(false);
+        northWall.SetActive(!tile.Values[2, 1]);
+        eastWall.SetActive(!tile.Values[1, 0]);
+        southWall.SetActive(!tile.Values[0, 1]);
+        westWall.SetActive(!tile.Values[1, 2]);
 
-        northDetails.ForEach(obj  => obj.SetActive(false));
-        eastDetails.ForEach(obj => obj.SetActive(false));
-        southDetails.ForEach(obj => obj.SetActive(false));
-        westDetails.ForEach(obj => obj.SetActive(false));
+        northDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 1]));
+        eastDetails.ForEach(obj => obj.SetActive(!tile.Values[1, 0]));
+        southDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 1]));
+        westDetails.ForEach(obj => obj.SetActive(!tile.Values[1, 2]));
 
-        northEastDetails.ForEach(obj => obj.SetActive(false));
-        southEastDetails.ForEach(obj => obj.SetActive(false));
-        southWestDetails.ForEach(obj => obj.SetActive(false));
-        northWestDetails.ForEach(obj => obj.SetActive(false));
-    }
-
-    public void Configure(DGCardinalDirection cellOptions)
-    {
-        bool north = (cellOptions & DGCardinalDirection.NORTH) != 0;
-        bool east = (cellOptions & DGCardinalDirection.EAST) != 0;
-        bool south = (cellOptions & DGCardinalDirection.SOUTH) != 0;
-        bool west = (cellOptions & DGCardinalDirection.WEST) != 0;
-
-
-        if (north)
-        {
-            northWall.SetActive(true);
-            northDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (east)
-        {
-            eastWall.SetActive(true);
-            eastDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (south)
-        {
-            southWall.SetActive(true);
-            southDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (west)
-        {
-            westWall.SetActive(true);
-            westDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (north && east)
-        {
-            northEastDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (south && east)
-        {
-            southEastDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (south && west)
-        {
-            southWestDetails.ForEach(obj => obj.SetActive(true));
-        }
-
-        if (north && west)
-        {
-            northWestDetails.ForEach(obj => obj.SetActive(true));
-        }
+        northEastDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 2]));
+        southEastDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 0]));
+        southWestDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 0]));
+        northWestDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 2]));
     }
 
     private void OnDrawGizmosSelected()
