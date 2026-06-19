@@ -405,13 +405,8 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
                 if (tileGrid[x, y] != null)
                 {
                     DGRoomCell room = Instantiate(roomCell, new Vector3(roomCell.CellWidth * x, 0, roomCell.CellWidth * y), Quaternion.identity, parent);
-                    room.name = $"Room Cell {x}, {y}";
+                    room.name = $"Room Cell ({x}, {y})";
                     room.Configure(tileGrid[x, y]);
-
-                    string debug = $"Room Cell {x}, {y}:\r\n\r\n";
-                    debug += tileGrid[x, y].ValuesToString();
-
-                    Debug.Log(debug);
                 }
             }
         }
