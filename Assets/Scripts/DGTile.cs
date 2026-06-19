@@ -64,6 +64,63 @@ public class DGTile : ISerializationCallbackReceiver
         return currentRotation;
     }
 
+    public string ValuesToString()
+    {
+        string message = "([W] = Wall, [F] = Floor, [C] = Centre)\r\n\r\n";
+
+        for (int y = TILE_SIZE - 1; y >= 0; y--)
+        {
+            string row = "";
+
+            for (int x = 0; x < TILE_SIZE; x++)
+            {
+                if (x == 1 && y == 1)
+                {
+                    row += "[C] ";
+                }
+                else
+                {
+                    row += Values[x, y] ? "[F] " : "[W] ";
+                }
+            }
+
+            message += row + "\r\n";
+        }
+
+        return message;
+    }
+
+    public string ContraintsToString()
+    {
+        string message = "([W] = Wall, [F] = Floor, [C] = Centre, [?] = Any)\r\n\r\n";
+
+        for (int y = TILE_SIZE - 1; y >= 0; y--)
+        {
+            string row = "";
+
+            for (int x = 0; x < TILE_SIZE; x++)
+            {
+                if (x == 1 && y == 1)
+                {
+                    row += "[C] ";
+                }
+                else if (IsContraint[x, y])
+                {
+                    row += Values[x, y] ? "[F] " : "[W] ";
+                }
+                else
+                {
+                    row += "[?] ";
+                }
+            }
+
+            message += row + "\r\n";
+        }
+
+        return message;
+    }
+
+
     public void DrawGizmo(float size, float startX, float startY)
     {
         float subTileSize = size / TILE_SIZE;

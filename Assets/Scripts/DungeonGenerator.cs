@@ -41,6 +41,9 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
     [SerializeField, HideInInspector]
     private int serialisedTileGridHeight;
 
+    [SerializeField, Range(0, 20)]
+    private int wfcBacktrackLimit = 10;
+
     [SerializeField]
     private int wfcSeed = 0;
 
@@ -154,21 +157,50 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         }
 
         tileGrid = new DGTile[entropyGrid.GetLength(0), entropyGrid.GetLength(1)];
+        Stack<Vector2Int> tileHistory = new Stack<Vector2Int>();
+        int backtrackCounter = 0;
+        int backtrackHistoryLength = 0;
         
         entropyGrid = PopulateEntropyGrid(entropyGrid);
         (int lowestEntropyCell, Vector2Int lowestEntropyCellPosition) = FindLowestEntropyCell(entropyGrid);
-
         while (lowestEntropyCell >= 0)
         {
             if (lowestEntropyCell == 0)
             {
-                LogMissingCell(lowestEntropyCellPosition.x, lowestEntropyCellPosition.y);
-                break;
-            }
-            tileGrid[lowestEntropyCellPosition.x, lowestEntropyCellPosition.y] = SelectRandomTile(entropyGrid[lowestEntropyCellPosition.x, lowestEntropyCellPosition.y]);
+                if (backtrackCounter < wfcBacktrackLimit)
+                {
+                    backtrackCounter++;
 
-            entropyGrid = PopulateEntropyGrid(entropyGrid);
-            (lowestEntropyCell, lowestEntropyCellPosition) = FindLowestEntropyCell(entropyGrid);
+                    int tilesToBacktrack = Mathf.Min(backtrackCounter, tileHistory.Count);
+                    for (int i = 0; i < tilesToBacktrack; i++)
+                    {
+                        Vector2Int previousPosition = tileHistory.Pop();
+                        tileGrid[previousPosition.x, previousPosition.y] = null;
+                    }
+
+                    entropyGrid = PopulateEntropyGrid(entropyGrid);
+                    (lowestEntropyCell, lowestEntropyCellPosition) = FindLowestEntropyCell(entropyGrid);
+                }
+                else
+                {
+                    LogMissingCell(lowestEntropyCellPosition.x, lowestEntropyCellPosition.y);
+                    return;
+                }
+            }
+            else
+            {
+                tileGrid[lowestEntropyCellPosition.x, lowestEntropyCellPosition.y] = SelectRandomTile(entropyGrid[lowestEntropyCellPosition.x, lowestEntropyCellPosition.y]);
+                tileHistory.Push(new Vector2Int(lowestEntropyCellPosition.x, lowestEntropyCellPosition.y));
+
+                entropyGrid = PopulateEntropyGrid(entropyGrid);
+                (lowestEntropyCell, lowestEntropyCellPosition) = FindLowestEntropyCell(entropyGrid);
+
+                if (tileHistory.Count > backtrackHistoryLength)
+                {
+                    backtrackHistoryLength = tileHistory.Count;
+                    backtrackCounter = 0;
+                }
+            }
         }
     }
 
@@ -349,30 +381,7 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
         DGTile tileConstraints = BuildTileConstraints(xPos, yPos);
 
         string message = $"Wave Function Collapse failed at position ({xPos}, {yPos}). A tile of this shape is require:\r\n";
-        message += "([W] = Wall, [F] = Floor, [C] = Centre, [?] = Any)\r\n\r\n";
-
-        for (int y = 2; y >= 0; y--)
-        {
-            string row = "";
-
-            for (int x = 0; x < 3; x++)
-            {
-                if (x == 1 && y == 1)
-                {
-                    row += "[C] ";
-                }
-                else if (tileConstraints.IsContraint[x, y])
-                {
-                    row += tileConstraints.Values[x, y] ? "[F] " : "[W] ";
-                }
-                else
-                {
-                    row += "[?] ";
-                }
-            }
-
-            message += row + "\r\n";
-        }
+        message += tileConstraints.ContraintsToString();
 
         Debug.LogError(message);
     }
@@ -396,7 +405,13 @@ public class DungeonGenerator : MonoBehaviour, ISerializationCallbackReceiver
                 if (tileGrid[x, y] != null)
                 {
                     DGRoomCell room = Instantiate(roomCell, new Vector3(roomCell.CellWidth * x, 0, roomCell.CellWidth * y), Quaternion.identity, parent);
+                    room.name = $"Room Cell {x}, {y}";
                     room.Configure(tileGrid[x, y]);
+
+                    string debug = $"Room Cell {x}, {y}:\r\n\r\n";
+                    debug += tileGrid[x, y].ValuesToString();
+
+                    Debug.Log(debug);
                 }
             }
         }

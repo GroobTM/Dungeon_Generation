@@ -45,10 +45,10 @@ public class DGRoomCell : MonoBehaviour
         southDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 1]));
         westDetails.ForEach(obj => obj.SetActive(!tile.Values[1, 2]));
 
-        northEastDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 2]));
+        northEastDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 0]));
         southEastDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 0]));
-        southWestDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 0]));
-        northWestDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 2]));
+        southWestDetails.ForEach(obj => obj.SetActive(!tile.Values[0, 2]));
+        northWestDetails.ForEach(obj => obj.SetActive(!tile.Values[2, 2]));
     }
 
     private void OnDrawGizmosSelected()

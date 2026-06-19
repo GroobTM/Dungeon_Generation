@@ -10,7 +10,7 @@ public class DGDrunkardsWalk
     private DGSharedCounter sharedCellCounter;
     private float targetBias;
 
-    private Dictionary<DGCardinalDirection, float> directionWeights = new Dictionary<DGCardinalDirection, float>();
+    private Dictionary<CardinalDirection, float> directionWeights = new Dictionary<CardinalDirection, float>();
 
     public DGDrunkardsWalk(Vector2Int target, float targetBias, bool[,] grid, DGSharedCounter sharedCellCounter)
     {
@@ -42,7 +42,7 @@ public class DGDrunkardsWalk
         float selectedValue = Random.Range(0f, totalWeight);
 
         totalWeight = 0f;
-        foreach(KeyValuePair<DGCardinalDirection, float> directionWeight in directionWeights)
+        foreach(KeyValuePair<CardinalDirection, float> directionWeight in directionWeights)
         {
             totalWeight += directionWeight.Value;
 
@@ -64,10 +64,10 @@ public class DGDrunkardsWalk
 
         if (target.x == -1 || target.y == -1)
         {
-            directionWeights[DGCardinalDirection.NORTH] = northBaseProbability;
-            directionWeights[DGCardinalDirection.EAST] = eastBaseProbability;
-            directionWeights[DGCardinalDirection.SOUTH] = southBaseProbability;
-            directionWeights[DGCardinalDirection.WEST] = westBaseProbability;
+            directionWeights[CardinalDirection.NORTH] = northBaseProbability;
+            directionWeights[CardinalDirection.EAST] = eastBaseProbability;
+            directionWeights[CardinalDirection.SOUTH] = southBaseProbability;
+            directionWeights[CardinalDirection.WEST] = westBaseProbability;
         }
         else
         {
@@ -78,27 +78,27 @@ public class DGDrunkardsWalk
             float southBiasProbability = diff.y > 0 ? 1f : 0f;
             float westBiasProbability = diff.x > 0 ? 1f : 0f;
 
-            directionWeights[DGCardinalDirection.NORTH] = Mathf.Lerp(1f, northBiasProbability, targetBias) * northBaseProbability;
-            directionWeights[DGCardinalDirection.EAST] = Mathf.Lerp(1f, eastBiasProbability, targetBias) * eastBaseProbability;
-            directionWeights[DGCardinalDirection.SOUTH] = Mathf.Lerp(1f, southBiasProbability, targetBias) * southBaseProbability;
-            directionWeights[DGCardinalDirection.WEST] = Mathf.Lerp(1f, westBiasProbability, targetBias) * westBaseProbability;
+            directionWeights[CardinalDirection.NORTH] = Mathf.Lerp(1f, northBiasProbability, targetBias) * northBaseProbability;
+            directionWeights[CardinalDirection.EAST] = Mathf.Lerp(1f, eastBiasProbability, targetBias) * eastBaseProbability;
+            directionWeights[CardinalDirection.SOUTH] = Mathf.Lerp(1f, southBiasProbability, targetBias) * southBaseProbability;
+            directionWeights[CardinalDirection.WEST] = Mathf.Lerp(1f, westBiasProbability, targetBias) * westBaseProbability;
         }        
     }
 
-    private void MoveDrunkard(DGCardinalDirection direction)
+    private void MoveDrunkard(CardinalDirection direction)
     {
         switch (direction)
         {
-            case DGCardinalDirection.NORTH:
+            case CardinalDirection.NORTH:
                 currentPos.y -= 1;
                 break;
-            case DGCardinalDirection.EAST:
+            case CardinalDirection.EAST:
                 currentPos.x -= 1;
                 break;
-            case DGCardinalDirection.SOUTH:
+            case CardinalDirection.SOUTH:
                 currentPos.y += 1;
                 break;
-            case DGCardinalDirection.WEST:
+            case CardinalDirection.WEST:
                 currentPos.x += 1;
                 break;
         }
@@ -111,5 +111,13 @@ public class DGDrunkardsWalk
             sharedCellCounter.Value++;
             grid[currentPos.x, currentPos.y] = true;
         }
+    }
+
+    private enum CardinalDirection
+    {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
     }
 }

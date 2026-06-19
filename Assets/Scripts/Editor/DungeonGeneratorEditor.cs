@@ -30,6 +30,7 @@ public class DungeonGeneratorEditor : Editor
     private SerializedProperty drunkardsWalkTargets;
     private SerializedProperty drunkardsWalkSeed;
     private SerializedProperty tileSet;
+    private SerializedProperty wfcBacktrackLimit;
     private SerializedProperty wfcSeed;
     private SerializedProperty roomCell;
 
@@ -55,6 +56,7 @@ public class DungeonGeneratorEditor : Editor
         drunkardsWalkTargets = serializedObject.FindProperty("drunkardsWalkTargets");
         drunkardsWalkSeed = serializedObject.FindProperty("drunkardsWalkSeed");
         tileSet = serializedObject.FindProperty("tileSet");
+        wfcBacktrackLimit = serializedObject.FindProperty("wfcBacktrackLimit");
         wfcSeed = serializedObject.FindProperty("wfcSeed");
         roomCell = serializedObject.FindProperty("roomCell");
 
@@ -366,6 +368,9 @@ public class DungeonGeneratorEditor : Editor
 
         PropertyField tileSetField = new PropertyField(tileSet, "Tile Set");
         controls.Add(tileSetField);
+
+        PropertyField backtrackingLimitField = new PropertyField(wfcBacktrackLimit, "Backtracking Limit");
+        controls.Add(backtrackingLimitField);
 
         PropertyField seedField = new PropertyField(wfcSeed, "Seed");
         controls.Add(seedField);
