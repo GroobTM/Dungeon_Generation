@@ -145,7 +145,7 @@ public class DungeonGeneratorEditor : Editor
         gridContainer.Clear();
         gridContainer.style.width = gridWidth.intValue * gridCellSize;
 
-        for (int y = 0; y < gridHeight.intValue; y++)
+        for (int y = gridHeight.intValue - 1; y >= 0; y--)
         {
             for (int x = 0; x < gridWidth.intValue; x++)
             {

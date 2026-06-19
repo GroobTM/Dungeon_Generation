@@ -478,7 +478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonGenerator
   gridWidth: 10
   gridHeight: 10
-  serialisedEnabledGrid: 01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
+  serialisedEnabledGrid: 00000100000000000000000001010101010100000000010100010101010000000101000101010100000000000101010101000000010101010101010000000000010101010100000101010101010100000101010101010101000001010101010101000000
   serialisedEnabledGridWidth: 10
   serialisedEnabledGridHeight: 10
   drunkardsWalkTargets:
@@ -489,530 +489,377 @@ MonoBehaviour:
   drunkardsWalkSeed: -558442584
   tileSet: {fileID: 11400000, guid: 74af0bb189562e44d9d8bc5d3383c525, type: 2}
   serialisedTileGrid:
-  - rid: 7576940681503703804
-  - rid: 7576940681503703805
-  - rid: 7576940681503703806
-  - rid: 7576940681503703807
-  - rid: 7576940681503703808
-  - rid: 7576940681503703809
-  - rid: 7576940681503703810
-  - rid: 7576940681503703811
-  - rid: 7576940681503703812
-  - rid: 7576940681503703813
-  - rid: 7576940681503703602
-  - rid: 7576940681503703587
-  - rid: 7576940681503703814
-  - rid: 7576940681503703636
-  - rid: 7576940681503703815
-  - rid: 7576940681503703816
-  - rid: 7576940681503703636
-  - rid: 7576940681503703817
-  - rid: 7576940681503703818
-  - rid: 7576940681503703819
-  - rid: 7576940681503703592
-  - rid: 7576940681503703820
-  - rid: 7576940681503703821
-  - rid: 7576940681503703631
-  - rid: 7576940681503703822
-  - rid: 7576940681503703751
-  - rid: 7576940681503703823
-  - rid: 7576940681503703824
-  - rid: 7576940681503703751
-  - rid: 7576940681503703825
-  - rid: 7576940681503703826
-  - rid: 7576940681503703827
-  - rid: 7576940681503703828
-  - rid: 7576940681503703829
-  - rid: 7576940681503703830
-  - rid: 7576940681503703631
-  - rid: 7576940681503703636
-  - rid: 7576940681503703831
-  - rid: 7576940681503703832
-  - rid: 7576940681503703602
-  - rid: 7576940681503703631
-  - rid: 7576940681503703833
-  - rid: 7576940681503703602
-  - rid: 7576940681503703834
-  - rid: 7576940681503703835
-  - rid: 7576940681503703836
-  - rid: 7576940681503703631
-  - rid: 7576940681503703837
-  - rid: 7576940681503703838
-  - rid: 7576940681503703839
-  - rid: 7576940681503703840
-  - rid: 7576940681503703841
-  - rid: 7576940681503703602
-  - rid: 7576940681503703842
-  - rid: 7576940681503703751
-  - rid: 7576940681503703843
-  - rid: 7576940681503703844
-  - rid: 7576940681503703845
-  - rid: 7576940681503703846
-  - rid: 7576940681503703602
-  - rid: 7576940681503703847
-  - rid: 7576940681503703848
-  - rid: 7576940681503703849
-  - rid: 7576940681503703592
-  - rid: 7576940681503703850
-  - rid: 7576940681503703851
-  - rid: 7576940681503703852
-  - rid: 7576940681503703853
-  - rid: 7576940681503703854
-  - rid: 7576940681503703855
-  - rid: 7576940681503703592
-  - rid: 7576940681503703856
-  - rid: 7576940681503703857
-  - rid: 7576940681503703858
-  - rid: 7576940681503703859
-  - rid: 7576940681503703860
-  - rid: 7576940681503703861
-  - rid: 7576940681503703862
-  - rid: 7576940681503703863
-  - rid: 7576940681503703864
-  - rid: 7576940681503703865
-  - rid: 7576940681503703866
-  - rid: 7576940681503703867
-  - rid: 7576940681503703868
-  - rid: 7576940681503703869
-  - rid: 7576940681503703751
-  - rid: 7576940681503703870
-  - rid: 7576940681503703592
-  - rid: 7576940681503703871
-  - rid: 7576940681503703872
-  - rid: 7576940681503703873
-  - rid: 7576940681503703874
-  - rid: 7576940681503703875
-  - rid: 7576940681503703631
-  - rid: 7576940681503703876
-  - rid: 7576940681503703877
-  - rid: 7576940681503703878
-  - rid: 7576940681503703879
-  - rid: 7576940681503703880
-  - rid: 7576940681503703881
-  serialisedTileGridWidth: 10
+  - rid: -2
+  - rid: -2
+  - rid: 7576940681503704057
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: 7576940681503703947
+  - rid: 7576940681503704058
+  - rid: 7576940681503704059
+  - rid: 7576940681503704060
+  - rid: 7576940681503704061
+  - rid: 7576940681503704062
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: 7576940681503704063
+  - rid: 7576940682680991744
+  - rid: -2
+  - rid: 7576940682680991745
+  - rid: 7576940681503703912
+  - rid: 7576940682680991746
+  - rid: 7576940682680991747
+  - rid: -2
+  - rid: -2
+  - rid: 7576940682680991748
+  - rid: 7576940682680991749
+  - rid: -2
+  - rid: 7576940681503703947
+  - rid: 7576940682680991750
+  - rid: 7576940682680991751
+  - rid: 7576940682680991752
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: 7576940682680991753
+  - rid: 7576940682680991754
+  - rid: 7576940682680991755
+  - rid: 7576940682680991756
+  - rid: 7576940681503703932
+  - rid: -2
+  - rid: -2
+  - rid: 7576940682680991757
+  - rid: 7576940682680991758
+  - rid: 7576940682680991759
+  - rid: 7576940682680991760
+  - rid: 7576940682680991761
+  - rid: 7576940682680991762
+  - rid: 7576940682680991763
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: 7576940682680991764
+  - rid: 7576940681503703947
+  - rid: 7576940682680991765
+  - rid: 7576940682680991766
+  - rid: 7576940682680991767
+  - rid: -2
+  - rid: 7576940682680991768
+  - rid: 7576940682680991769
+  - rid: 7576940682680991770
+  - rid: 7576940682680991771
+  - rid: 7576940682680991772
+  - rid: 7576940682680991773
+  - rid: 7576940682680991774
+  - rid: -2
+  - rid: 7576940682680991775
+  - rid: 7576940681503704030
+  - rid: 7576940682680991776
+  - rid: 7576940682680991777
+  - rid: 7576940682680991778
+  - rid: 7576940682680991779
+  - rid: 7576940682680991780
+  - rid: 7576940682680991781
+  - rid: -2
+  - rid: 7576940681503703947
+  - rid: 7576940682680991782
+  - rid: 7576940682680991783
+  - rid: 7576940682680991784
+  - rid: 7576940682680991785
+  - rid: 7576940681503703900
+  - rid: 7576940682680991786
+  - rid: -2
+  - rid: -2
+  serialisedTileGridWidth: 9
   serialisedTileGridHeight: 10
   wfcBacktrackLimit: 10
-  wfcSeed: -499919938
+  wfcSeed: -1575881866
   roomCell: {fileID: 991980694200969262, guid: ffd9c1ccfafc17f428bdfb6831ad2008, type: 3}
   references:
     version: 2
     RefIds:
-    - rid: 7576940681503703587
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100000101000100
-    - rid: 7576940681503703592
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100000101000000
-    - rid: 7576940681503703602
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100000100000100
-    - rid: 7576940681503703631
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 7576940681503703900
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000101000101000000
-    - rid: 7576940681503703636
+    - rid: 7576940681503703912
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000101010101000101
-    - rid: 7576940681503703751
+        serialisedTile: 000100000101000100
+    - rid: 7576940681503703932
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000100010101000100
-    - rid: 7576940681503703804
+        serialisedTile: 000100010100010100
+    - rid: 7576940681503703947
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000000000100000100
-    - rid: 7576940681503703805
+        serialisedTile: 000100000101000000
+    - rid: 7576940681503704030
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000000000101000100
-    - rid: 7576940681503703806
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000000
-    - rid: 7576940681503703807
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000101
-    - rid: 7576940681503703808
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100010100
-    - rid: 7576940681503703809
+        serialisedTile: 000100000101000101
+    - rid: 7576940681503704057
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000000000100000100
-    - rid: 7576940681503703810
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000101
-    - rid: 7576940681503703811
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010101010101
-    - rid: 7576940681503703812
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000100
-    - rid: 7576940681503703813
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000100000100
-    - rid: 7576940681503703814
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010101000000
-    - rid: 7576940681503703815
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010101010100
-    - rid: 7576940681503703816
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101010101
-    - rid: 7576940681503703817
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010101010100
-    - rid: 7576940681503703818
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010101010100
-    - rid: 7576940681503703819
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000100
-    - rid: 7576940681503703820
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000000
-    - rid: 7576940681503703821
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000100
-    - rid: 7576940681503703822
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010101010101000100
-    - rid: 7576940681503703823
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010101010101010101
-    - rid: 7576940681503703824
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010101010101010101
-    - rid: 7576940681503703825
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000100
-    - rid: 7576940681503703826
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000101
-    - rid: 7576940681503703827
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100010100
-    - rid: 7576940681503703828
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100000100000100
-    - rid: 7576940681503703829
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703830
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000100
-    - rid: 7576940681503703831
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010101010100
-    - rid: 7576940681503703832
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010100000000
-    - rid: 7576940681503703833
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010100000000
-    - rid: 7576940681503703834
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703835
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000100
-    - rid: 7576940681503703836
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000000
-    - rid: 7576940681503703837
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010100010100000000
-    - rid: 7576940681503703838
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703839
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000100
-    - rid: 7576940681503703840
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703841
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000000
-    - rid: 7576940681503703842
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000101
-    - rid: 7576940681503703843
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100010100
-    - rid: 7576940681503703844
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000100000100
-    - rid: 7576940681503703845
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703846
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000100
-    - rid: 7576940681503703847
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000100000100
-    - rid: 7576940681503703848
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703849
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000000
-    - rid: 7576940681503703850
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010101010101000100
-    - rid: 7576940681503703851
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000100
-    - rid: 7576940681503703852
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000100
-    - rid: 7576940681503703853
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010101000000
-    - rid: 7576940681503703854
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000000
-    - rid: 7576940681503703855
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000000
-    - rid: 7576940681503703856
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010101000000
-    - rid: 7576940681503703857
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100000000
-    - rid: 7576940681503703858
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703859
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000000
-    - rid: 7576940681503703860
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010101000100
-    - rid: 7576940681503703861
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000100010100000100
-    - rid: 7576940681503703862
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000101
-    - rid: 7576940681503703863
+    - rid: 7576940681503704058
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000000010101000100
-    - rid: 7576940681503703864
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010100010100
-    - rid: 7576940681503703865
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000000101000000
-    - rid: 7576940681503703866
+    - rid: 7576940681503704059
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000000010100000000
-    - rid: 7576940681503703867
+    - rid: 7576940681503704060
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000000000101000100
-    - rid: 7576940681503703868
+        serialisedTile: 000000000101000000
+    - rid: 7576940681503704061
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000000010101000100
-    - rid: 7576940681503703869
+        serialisedTile: 000000010101000101
+    - rid: 7576940681503704062
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000000010101010101
-    - rid: 7576940681503703870
+        serialisedTile: 000000010100000100
+    - rid: 7576940681503704063
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000100010100000000
-    - rid: 7576940681503703871
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 010101010101000000
-    - rid: 7576940681503703872
+        serialisedTile: 000000000101000000
+    - rid: 7576940682680991744
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000100010100000100
-    - rid: 7576940681503703873
+    - rid: 7576940682680991745
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000100000100
+    - rid: 7576940682680991746
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010100010101010100
+    - rid: 7576940682680991747
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010100000000
+    - rid: 7576940682680991748
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000000000101000000
-    - rid: 7576940681503703874
-      type: {class: DGTile, ns: , asm: Assembly-CSharp}
-      data:
-        Weight: 1
-        serialisedTile: 000000010101000000
-    - rid: 7576940681503703875
+    - rid: 7576940682680991749
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000100010100000000
-    - rid: 7576940681503703876
+    - rid: 7576940682680991750
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000100010101000000
-    - rid: 7576940681503703877
+        serialisedTile: 000101010101000000
+    - rid: 7576940682680991751
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 010100010100000000
-    - rid: 7576940681503703878
+        serialisedTile: 000100010100000000
+    - rid: 7576940682680991752
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000100000100
+    - rid: 7576940682680991753
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000101000101
+    - rid: 7576940682680991754
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101000100
+    - rid: 7576940682680991755
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101010101
+    - rid: 7576940682680991756
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101000100
+    - rid: 7576940682680991757
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000000000101000000
-    - rid: 7576940681503703879
+    - rid: 7576940682680991758
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
         serialisedTile: 000000010101000000
-    - rid: 7576940681503703880
+    - rid: 7576940682680991759
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
-        serialisedTile: 000000010101000000
-    - rid: 7576940681503703881
+        serialisedTile: 000100010101000000
+    - rid: 7576940682680991760
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010101010101000100
+    - rid: 7576940682680991761
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010101000100
+    - rid: 7576940682680991762
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010101010101010101
+    - rid: 7576940682680991763
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010100000100
+    - rid: 7576940682680991764
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000100000100
+    - rid: 7576940682680991765
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000101010101000000
+    - rid: 7576940682680991766
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010101000100
+    - rid: 7576940682680991767
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010100010100000000
+    - rid: 7576940682680991768
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000101000101
+    - rid: 7576940682680991769
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101000101
+    - rid: 7576940682680991770
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101010100
+    - rid: 7576940682680991771
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010101000000
+    - rid: 7576940682680991772
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101000101
+    - rid: 7576940682680991773
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010101000101
+    - rid: 7576940682680991774
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010100000100
+    - rid: 7576940682680991775
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000100000100
+    - rid: 7576940682680991776
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010101010101000100
+    - rid: 7576940682680991777
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010100010100000000
+    - rid: 7576940682680991778
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000101000000
+    - rid: 7576940682680991779
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010101000100
+    - rid: 7576940682680991780
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010100010101010100
+    - rid: 7576940682680991781
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010100010100000000
+    - rid: 7576940682680991782
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000100010101000000
+    - rid: 7576940682680991783
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 010100010100000000
+    - rid: 7576940682680991784
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000000101000000
+    - rid: 7576940682680991785
+      type: {class: DGTile, ns: , asm: Assembly-CSharp}
+      data:
+        Weight: 1
+        serialisedTile: 000000010100000000
+    - rid: 7576940682680991786
       type: {class: DGTile, ns: , asm: Assembly-CSharp}
       data:
         Weight: 1
